@@ -27,6 +27,22 @@ const init = async () => {
     clearInvalid: false,
     strictHeader: true,
   });
+
+  // Log setiap request masuk
+  server.ext("onRequest", (request, h) => {
+    console.log("Incoming method:", request.method, "on path:", request.path);
+    return h.continue;
+  });
+
+  // Handler global untuk OPTIONS agar preflight CORS tidak error
+  server.route({
+    method: "OPTIONS",
+    path: "/{any*}",
+    handler: (request, h) => {
+      return h.response().code(200);
+    },
+  });
+
   server.route(routes);
   await server.start();
   console.log(`Server berjalan pada ${server.info.uri}`);
