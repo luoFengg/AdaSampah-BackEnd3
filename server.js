@@ -20,7 +20,7 @@ const init = async () => {
           "http://localhost:5173/",
         ],
         credentials: true,
-        additionalHeaders: ["content-type", "authorization"],
+        headers: ["Accept", "Content-Type", "Authorization"],
       },
     },
   });
