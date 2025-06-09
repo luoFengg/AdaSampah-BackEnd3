@@ -18,6 +18,8 @@ const init = async () => {
           "http://localhost:4173",
           "http://localhost:4173/",
           "http://localhost:5173/",
+          "https://adasampah.netlify.app/",
+          "https://adasampah.netlify.app",
         ],
         credentials: true,
         headers: ["Accept", "Content-Type", "Authorization"],
@@ -40,12 +42,24 @@ const init = async () => {
     return h.continue;
   });
 
-  // Handler global untuk OPTIONS agar preflight CORS tidak error
+  // Handler global untuk OPTIONS agar preflight CORS tidak error dan header CORS dikirim manual
   server.route({
     method: "OPTIONS",
     path: "/{any*}",
     handler: (request, h) => {
-      return h.response().code(200);
+      return h
+        .response()
+        .header("Access-Control-Allow-Origin", request.headers.origin || "*")
+        .header(
+          "Access-Control-Allow-Methods",
+          "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+        )
+        .header(
+          "Access-Control-Allow-Headers",
+          "Accept, Content-Type, Authorization"
+        )
+        .header("Access-Control-Allow-Credentials", "true")
+        .code(200);
     },
   });
 
