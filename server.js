@@ -13,7 +13,12 @@ const init = async () => {
     host: "0.0.0.0",
     routes: {
       cors: {
-        origin: ["*"],
+        origin: [
+          "http://localhost:5173",
+          "http://localhost:4173",
+          "http://localhost:4173/",
+          "http://localhost:5173/",
+        ],
         credentials: true,
         additionalHeaders: ["content-type", "authorization"],
       },
