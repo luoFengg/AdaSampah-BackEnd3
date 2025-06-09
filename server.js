@@ -20,6 +20,8 @@ const init = async () => {
           "http://localhost:5173/",
           "https://adasampah.netlify.app/",
           "https://adasampah.netlify.app",
+          "https://adasampah1.netlify.app/",
+          "https://adasampah1.netlify.app",
         ],
         credentials: true,
         headers: ["Accept", "Content-Type", "Authorization"],
@@ -34,7 +36,7 @@ const init = async () => {
     encoding: "none",
     clearInvalid: false,
     strictHeader: true,
-    isSameSite: "None", // gunakan isSameSite sesuai versi Hapi
+    isSameSite: "None",
   });
 
   // Log setiap request masuk
