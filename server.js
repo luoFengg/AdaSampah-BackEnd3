@@ -34,7 +34,7 @@ const init = async () => {
     encoding: "none",
     clearInvalid: false,
     strictHeader: true,
-    sameSite: "None", // agar cookie cross-origin tidak hilang
+    isSameSite: "None", // gunakan isSameSite sesuai versi Hapi
   });
 
   // Log setiap request masuk
