@@ -33,8 +33,7 @@ https://adasampah-backend3-production.up.railway.app
     "username": "string",
     "email": "string",
     "password": "string",
-    "fullName": "string",
-    "role": "string" // opsional, default: "user"
+    "fullName": "string"
   }
   ```
 - **Respon:** Data pengguna (tanpa password).
