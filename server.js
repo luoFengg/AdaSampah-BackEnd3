@@ -45,6 +45,26 @@ const init = async () => {
     return h.continue;
   });
 
+  // Tambahkan handler global untuk CORS di semua response (termasuk error/404)
+  server.ext("onPreResponse", (request, h) => {
+    const response = request.response;
+    // Cek jika response adalah error atau response biasa
+    if (response.isBoom || response.isServer || response.output) {
+      // Untuk error (Boom), tambahkan header di response.output.headers
+      response.output.headers["Access-Control-Allow-Origin"] =
+        request.headers.origin || "*";
+      response.output.headers["Access-Control-Allow-Credentials"] = "true";
+    } else if (response.header) {
+      // Untuk response biasa
+      response.header(
+        "Access-Control-Allow-Origin",
+        request.headers.origin || "*"
+      );
+      response.header("Access-Control-Allow-Credentials", "true");
+    }
+    return h.continue;
+  });
+
   // Handler global untuk OPTIONS agar preflight CORS tidak error dan header CORS dikirim manual
   server.route({
     method: "OPTIONS",
