@@ -64,8 +64,8 @@ const loginUser = async (request, h) => {
     response.state("token", token, {
       path: "/",
       isHttpOnly: true,
-      isSecure: process.env.NODE_ENV === "production" ? true : false, // <-- ubah baris ini
-      sameSite: "Strict",
+      isSecure: process.env.NODE_ENV,
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
       ttl: 3 * 24 * 60 * 60 * 1000, // 3 hari (ms)
     });
 

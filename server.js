@@ -31,12 +31,12 @@ const init = async () => {
   await server.register(cookie);
   server.state("token", {
     ttl: null,
-    isSecure: true,
+    isSecure: process.env.NODE_ENV,
     isHttpOnly: true,
     encoding: "none",
     clearInvalid: false,
     strictHeader: true,
-    isSameSite: "None",
+    isSameSite: process.env.NODE_ENV === "production" ? "None" : "Lax", // None untuk production, Lax untuk dev
   });
 
   // Log setiap request masuk

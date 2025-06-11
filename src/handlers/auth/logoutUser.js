@@ -38,8 +38,8 @@ const logoutUser = async (request, h) => {
     response.unstate("token", {
       path: "/",
       isHttpOnly: true,
-      isSecure: process.env.NODE_ENV === "production", // true hanya di production
-      sameSite: "Strict",
+      isSecure: process.env.NODE_ENV,
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
     });
 
     return response.code(200);
