@@ -1,8 +1,8 @@
-# AdaSampah Back-End API Documentation
+# Dokumentasi API Back-End AdaSampah
 
-## Overview
+## Ringkasan
 
-AdaSampah is a waste reporting platform. This backend provides RESTful APIs for user management, authentication, and waste report management. Authentication uses JWT stored in HTTP-only cookies for secure session handling.
+AdaSampah adalah platform pelaporan sampah. Backend ini menyediakan API RESTful untuk manajemen pengguna, autentikasi, dan pengelolaan laporan sampah. Autentikasi menggunakan JWT yang disimpan pada cookie HTTP-only untuk keamanan sesi.
 
 ---
 
@@ -14,17 +14,17 @@ https://adasampah-backend3-production.up.railway.app
 
 ---
 
-## Authentication
+## Autentikasi
 
-- **Login** returns a JWT token in an HTTP-only cookie (`token`).
-- Most endpoints require authentication via this cookie.
-- Logout will blacklist the token and remove the cookie.
+- **Login** akan mengembalikan token JWT pada cookie HTTP-only (`token`).
+- Sebagian besar endpoint membutuhkan autentikasi melalui cookie ini.
+- Logout akan memasukkan token ke blacklist dan menghapus cookie.
 
 ---
 
-## User Endpoints
+## Endpoint Pengguna
 
-### Register
+### Registrasi
 
 - **POST** `/user/register`
 - **Body:**
@@ -34,10 +34,10 @@ https://adasampah-backend3-production.up.railway.app
     "email": "string",
     "password": "string",
     "fullName": "string",
-    "role": "string" // optional, default: "user"
+    "role": "string" // opsional, default: "user"
   }
   ```
-- **Response:** User data (without password).
+- **Respon:** Data pengguna (tanpa password).
 
 ---
 
@@ -47,169 +47,165 @@ https://adasampah-backend3-production.up.railway.app
 - **Body:**
   ```json
   {
-    "username": "string", // or "email"
+    "username": "string", // atau "email"
     "password": "string"
   }
   ```
-- **Response:** User data + JWT token (in cookie).
+- **Respon:** Data pengguna + token JWT (dalam cookie).
 
 ---
 
 ### Logout
 
 - **POST** `/user/logout`
-- **Cookie:** `token` (required)
-- **Response:** Success message.
+- **Cookie:** `token` (wajib)
+- **Respon:** Pesan sukses.
 
 ---
 
-### Get User by ID
+### Ambil Pengguna Berdasarkan ID
 
 - **GET** `/user/{id}`
-- **Response:** User data (without password).
+- **Respon:** Data pengguna (tanpa password).
 
 ---
 
-### Update User
+### Update Pengguna
 
 - **PUT** `/user/{id}`
-- **Auth:** Required
-- **Payload:** `multipart/form-data` (for profile picture upload)
-- **Fields:** `username`, `email`, `fullName`, `profileUrl` (file)
-- **Response:** Updated user data.
+- **Autentikasi:** Wajib
+- **Payload:** `multipart/form-data` (untuk upload foto profil)
+- **Field:** `username`, `email`, `fullName`, `profileUrl` (file)
+- **Respon:** Data pengguna yang telah diperbarui.
 
 ---
 
-### Delete User
+### Hapus Pengguna
 
 - **DELETE** `/user/{id}`
-- **Auth:** Required
-- **Response:** Deleted user data.
+- **Autentikasi:** Wajib
+- **Respon:** Data pengguna yang dihapus.
 
 ---
 
-### Refetch Authenticated User
+### Refetch Pengguna Terautentikasi
 
 - **GET** `/user/refetch`
-- **Auth:** Required
-- **Response:** Authenticated user data.
+- **Autentikasi:** Wajib
+- **Respon:** Data pengguna yang sedang login.
 
 ---
 
-## Report Endpoints
+## Endpoint Laporan
 
-### Get All Reports
+### Ambil Semua Laporan
 
 - **GET** `/reports`
-- **Response:** Array of all reports.
+- **Respon:** Array seluruh laporan.
 
 ---
 
-### Get All Reports (Paginated)
+### Ambil Semua Laporan (Paginasi)
 
 - **GET** `/reports/limit?page={page}&limit={limit}`
 - **Query:** `page` (default: 1), `limit` (default: 9)
-- **Response:** Paginated reports, total pages, current page.
+- **Respon:** Laporan terpaginasikan, total halaman, halaman saat ini.
 
 ---
 
-### Get Report by ID
+### Ambil Laporan Berdasarkan ID
 
 - **GET** `/reports/{reportId}`
-- **Response:** Report data.
+- **Respon:** Data laporan.
 
 ---
 
-### Create Report
+### Buat Laporan
 
 - **POST** `/reports`
-- **Auth:** Required
-- **Payload:** `multipart/form-data` (for photo upload)
-- **Fields:**
+- **Autentikasi:** Wajib
+- **Payload:** `multipart/form-data` (untuk upload foto)
+- **Field:**
   - `description` (string)
   - `lat`, `lon`, `latDetail`, `lonDetail` (number)
   - `regency`, `province`, `location`, `detailLocation` (string)
   - `photo` (file)
-  - `status`, `saved` (optional, JSON array)
-- **Response:** Created report ID.
+  - `status`, `saved` (opsional, array JSON)
+- **Respon:** ID laporan yang berhasil dibuat.
 
 ---
 
-### Edit Report Description
+### Edit Deskripsi Laporan
 
 - **PUT** `/reports/{reportId}`
-- **Auth:** Required
+- **Autentikasi:** Wajib
 - **Body:**
   ```json
   { "description": "string" }
   ```
-- **Response:** Updated report data.
+- **Respon:** Data laporan yang telah diperbarui.
 
 ---
 
-### Update Report Status
+### Update Status Laporan
 
 - **PATCH** `/reports/{reportId}/status`
 - **Body:**
   ```json
   { "statusDescription": "string" }
   ```
-- **Response:** Updated report with new status.
+- **Respon:** Laporan dengan status terbaru.
 
 ---
 
-### Delete Report
+### Hapus Laporan
 
 - **DELETE** `/reports/{reportId}`
-- **Auth:** Required
-- **Response:** Success message.
+- **Autentikasi:** Wajib
+- **Respon:** Pesan sukses.
 
 ---
 
-### Toggle Save Report by User
+### Toggle Simpan Laporan oleh Pengguna
 
 - **PATCH** `/reports/{reportId}/saved/{userId}`
-- **Auth:** Required
-- **Response:** Message indicating save/unsave.
+- **Autentikasi:** Wajib
+- **Respon:** Pesan status simpan/hapus simpan.
 
 ---
 
-### Get Saved Users for Report
+### Ambil Daftar User yang Menyimpan Laporan
 
 - **GET** `/reports/{reportId}/saved`
-- **Response:** Array of user IDs who saved the report.
+- **Respon:** Array user ID yang menyimpan laporan.
 
 ---
 
-### Get Reports by User
+### Ambil Laporan Berdasarkan User
 
 - **GET** `/reports/user/{userId}`
-- **Auth:** Required
-- **Response:** Array of reports created by the user.
+- **Autentikasi:** Wajib
+- **Respon:** Array laporan yang dibuat oleh user tersebut.
 
 ---
 
-## Error Handling
+## Penanganan Error
 
-- All endpoints return JSON with `status` and `message`.
-- HTTP status codes are used appropriately (e.g., 200, 400, 401, 404, 500).
-
----
-
-## Notes
-
-- All file uploads (profile picture, report photo) use `multipart/form-data`.
-- JWT secret and other sensitive configs are managed via environment variables.
-- CORS is enabled for allowed frontend origins.
+- Semua endpoint mengembalikan JSON dengan `status` dan `message`.
+- Kode status HTTP digunakan secara tepat (misal: 200, 400, 401, 404, 500).
 
 ---
 
-## Missing Handlers or References?
+## Catatan
 
-If you add new features or handlers (e.g., password reset, admin endpoints), please provide the handler files so this documentation can be updated accordingly.
+- Semua upload file (foto profil, foto laporan) menggunakan `multipart/form-data`.
+- JWT secret dan konfigurasi sensitif lain dikelola melalui environment variable.
+- CORS diaktifkan untuk origin frontend yang diizinkan.
 
 ---
 
-## Contact
+## Handler/Referensi Kurang?
 
-For questions or contributions, please contact the AdaSampah development team.
+Jika ada fitur baru atau handler yang belum didokumentasikan (misal: reset password, endpoint admin), silakan lampirkan file handler terkait agar dokumentasi dapat diperbarui.
+
+---
