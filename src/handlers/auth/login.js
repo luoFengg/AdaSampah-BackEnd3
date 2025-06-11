@@ -64,7 +64,7 @@ const loginUser = async (request, h) => {
     response.state("token", token, {
       path: "/",
       isHttpOnly: true,
-      isSecure: process.env.NODE_ENV,
+      isSecure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
       ttl: 3 * 24 * 60 * 60 * 1000, // 3 hari (ms)
     });

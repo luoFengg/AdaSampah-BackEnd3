@@ -31,7 +31,7 @@ const init = async () => {
   await server.register(cookie);
   server.state("token", {
     ttl: null,
-    isSecure: process.env.NODE_ENV,
+    isSecure: process.env.NODE_ENV === "production",
     isHttpOnly: true,
     encoding: "none",
     clearInvalid: false,
