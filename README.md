@@ -2,7 +2,7 @@
 
 ## Ringkasan
 
-AdaSampah adalah platform pelaporan sampah. Backend ini menyediakan API RESTful untuk manajemen pengguna, autentikasi, dan pengelolaan laporan sampah. Autentikasi menggunakan JWT yang disimpan pada cookie HTTP-only untuk keamanan sesi.
+AdaSampah adalah platform pelaporan dan edukasi sampah. Backend ini menyediakan API RESTful untuk manajemen pengguna, autentikasi, dan pengelolaan laporan sampah. Autentikasi menggunakan JWT yang disimpan pada cookie HTTP-only untuk keamanan sesi.
 
 ---
 
