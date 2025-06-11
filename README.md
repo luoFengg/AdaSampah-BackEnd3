@@ -195,16 +195,4 @@ https://adasampah-backend3-production.up.railway.app
 
 ---
 
-## Catatan
-
-- Semua upload file (foto profil, foto laporan) menggunakan `multipart/form-data`.
-- JWT secret dan konfigurasi sensitif lain dikelola melalui environment variable.
-- CORS diaktifkan untuk origin frontend yang diizinkan.
-
----
-
-## Handler/Referensi Kurang?
-
-Jika ada fitur baru atau handler yang belum didokumentasikan (misal: reset password, endpoint admin), silakan lampirkan file handler terkait agar dokumentasi dapat diperbarui.
-
 ---
