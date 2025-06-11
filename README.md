@@ -1,110 +1,215 @@
 # AdaSampah Back-End API Documentation
 
 ## Overview
-AdaSampah is a RESTful API for waste reporting and user management, built with Node.js, Hapi.js, and MongoDB. This documentation covers all available endpoints, request/response formats, authentication, and error handling.
+
+AdaSampah is a waste reporting platform. This backend provides RESTful APIs for user management, authentication, and waste report management. Authentication uses JWT stored in HTTP-only cookies for secure session handling.
+
+---
+
+## Base URL
+
+```
+https://adasampah-backend3-production.up.railway.app
+```
 
 ---
 
 ## Authentication
-- **JWT-based authentication** is used. Obtain a token via `/user/login` and send it as a cookie named `token` for protected endpoints.
-- Some endpoints require authentication (see each endpoint's `Auth` column).
+
+- **Login** returns a JWT token in an HTTP-only cookie (`token`).
+- Most endpoints require authentication via this cookie.
+- Logout will blacklist the token and remove the cookie.
 
 ---
 
 ## User Endpoints
 
-| Method | Endpoint           | Description                | Auth Required | Body / Params |
-|--------|--------------------|----------------------------|---------------|---------------|
-| POST   | /user/register     | Register a new user        | No            | username, email, password, fullName, role |
-| POST   | /user/login        | Login and get JWT token    | No            | username/email, password |
-| POST   | /user/logout       | Logout and blacklist token | Yes (cookie)  | -             |
-| GET    | /user/{id}         | Get user by ID             | No            | -             |
-| PUT    | /user/{id}         | Update user profile        | Yes           | username, email, fullName, profileUrl (file upload allowed) |
-| DELETE | /user/{id}         | Delete user by ID          | Yes           | -             |
-| GET    | /user/refetch      | Get current user (from JWT)| Yes           | -             |
+### Register
+
+- **POST** `/user/register`
+- **Body:**
+  ```json
+  {
+    "username": "string",
+    "email": "string",
+    "password": "string",
+    "fullName": "string",
+    "role": "string" // optional, default: "user"
+  }
+  ```
+- **Response:** User data (without password).
+
+---
+
+### Login
+
+- **POST** `/user/login`
+- **Body:**
+  ```json
+  {
+    "username": "string", // or "email"
+    "password": "string"
+  }
+  ```
+- **Response:** User data + JWT token (in cookie).
+
+---
+
+### Logout
+
+- **POST** `/user/logout`
+- **Cookie:** `token` (required)
+- **Response:** Success message.
+
+---
+
+### Get User by ID
+
+- **GET** `/user/{id}`
+- **Response:** User data (without password).
+
+---
+
+### Update User
+
+- **PUT** `/user/{id}`
+- **Auth:** Required
+- **Payload:** `multipart/form-data` (for profile picture upload)
+- **Fields:** `username`, `email`, `fullName`, `profileUrl` (file)
+- **Response:** Updated user data.
+
+---
+
+### Delete User
+
+- **DELETE** `/user/{id}`
+- **Auth:** Required
+- **Response:** Deleted user data.
+
+---
+
+### Refetch Authenticated User
+
+- **GET** `/user/refetch`
+- **Auth:** Required
+- **Response:** Authenticated user data.
 
 ---
 
 ## Report Endpoints
 
-| Method | Endpoint                                 | Description                                 | Auth Required | Body / Params |
-|--------|------------------------------------------|---------------------------------------------|---------------|---------------|
-| GET    | /                                       | Health check (Hello, World!)                | No            | -             |
-| GET    | /reports                                | Get all reports                             | No            | -             |
-| GET    | /reports/limit?page=&limit=             | Get paginated reports                       | No            | Query: page, limit |
-| GET    | /reports/{reportId}                     | Get report by ID                            | No            | -             |
-| POST   | /reports                                | Create a new report (with photo upload)     | Yes           | description, lat, lon, latDetail, lonDetail, regency, province, location, detailLocation, photo (file) |
-| PUT    | /reports/{reportId}                     | Edit report description                     | Yes           | description    |
-| PATCH  | /reports/{reportId}/status              | Update report status                        | No            | statusDescription |
-| DELETE | /reports/{reportId}                     | Delete report by ID                         | Yes           | -             |
-| PATCH  | /reports/{reportId}/saved/{userId}      | Toggle save/unsave report for user          | Yes           | -             |
-| GET    | /reports/{reportId}/saved               | Get list of user IDs who saved the report   | No            | -             |
-| GET    | /reports/user/{userId}                  | Get all reports by user                     | Yes           | -             |
+### Get All Reports
+
+- **GET** `/reports`
+- **Response:** Array of all reports.
 
 ---
 
-## Request & Response Examples
+### Get All Reports (Paginated)
 
-### Register User
-**POST /user/register**
-```json
-{
-  "username": "johndoe",
-  "email": "john@example.com",
-  "password": "yourpassword",
-  "fullName": "John Doe",
-  "role": "user"
-}
-```
+- **GET** `/reports/limit?page={page}&limit={limit}`
+- **Query:** `page` (default: 1), `limit` (default: 9)
+- **Response:** Paginated reports, total pages, current page.
 
-### Login User
-**POST /user/login**
-```json
-{
-  "username": "johndoe",
-  "password": "yourpassword"
-}
-```
-**Response:**
-```json
-{
-  "status": "success",
-  "message": "Login successful",
-  "data": {
-    "token": "<jwt-token>",
-    "userId": "user-xxxx",
-    "username": "johndoe",
-    "email": "john@example.com",
-    "fullName": "John Doe",
-    "role": "user",
-    "profileUrl": "..."
-  }
-}
-```
+---
+
+### Get Report by ID
+
+- **GET** `/reports/{reportId}`
+- **Response:** Report data.
+
+---
 
 ### Create Report
-**POST /reports** (multipart/form-data, requires authentication)
-- Fields: description, lat, lon, latDetail, lonDetail, regency, province, location, detailLocation, photo (file)
+
+- **POST** `/reports`
+- **Auth:** Required
+- **Payload:** `multipart/form-data` (for photo upload)
+- **Fields:**
+  - `description` (string)
+  - `lat`, `lon`, `latDetail`, `lonDetail` (number)
+  - `regency`, `province`, `location`, `detailLocation` (string)
+  - `photo` (file)
+  - `status`, `saved` (optional, JSON array)
+- **Response:** Created report ID.
+
+---
+
+### Edit Report Description
+
+- **PUT** `/reports/{reportId}`
+- **Auth:** Required
+- **Body:**
+  ```json
+  { "description": "string" }
+  ```
+- **Response:** Updated report data.
+
+---
+
+### Update Report Status
+
+- **PATCH** `/reports/{reportId}/status`
+- **Body:**
+  ```json
+  { "statusDescription": "string" }
+  ```
+- **Response:** Updated report with new status.
+
+---
+
+### Delete Report
+
+- **DELETE** `/reports/{reportId}`
+- **Auth:** Required
+- **Response:** Success message.
+
+---
+
+### Toggle Save Report by User
+
+- **PATCH** `/reports/{reportId}/saved/{userId}`
+- **Auth:** Required
+- **Response:** Message indicating save/unsave.
+
+---
+
+### Get Saved Users for Report
+
+- **GET** `/reports/{reportId}/saved`
+- **Response:** Array of user IDs who saved the report.
+
+---
+
+### Get Reports by User
+
+- **GET** `/reports/user/{userId}`
+- **Auth:** Required
+- **Response:** Array of reports created by the user.
 
 ---
 
 ## Error Handling
-- All error responses use the following format:
-```json
-{
-  "status": "fail",
-  "message": "Error message here"
-}
-```
+
+- All endpoints return JSON with `status` and `message`.
+- HTTP status codes are used appropriately (e.g., 200, 400, 401, 404, 500).
 
 ---
 
 ## Notes
-- For endpoints requiring authentication, send the JWT token as a cookie named `token`.
-- File uploads (profile photo, report photo) use `multipart/form-data`.
-- Pagination for `/reports/limit` uses query params: `page` (default 1), `limit` (default 9).
+
+- All file uploads (profile picture, report photo) use `multipart/form-data`.
+- JWT secret and other sensitive configs are managed via environment variables.
+- CORS is enabled for allowed frontend origins.
+
+---
+
+## Missing Handlers or References?
+
+If you add new features or handlers (e.g., password reset, admin endpoints), please provide the handler files so this documentation can be updated accordingly.
 
 ---
 
 ## Contact
-For further questions or bug reports, please contact the AdaSampah development team.
+
+For questions or contributions, please contact the AdaSampah development team.
